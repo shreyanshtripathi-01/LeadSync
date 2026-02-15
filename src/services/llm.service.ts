@@ -13,9 +13,9 @@ export class LLMService {
       }
 
       const response = await axios.post(
-        this.apiUrl,
+        'https://openrouter.ai/api/v1/chat/completions',
         {
-          model: 'meta-llama/llama-3-8b-instruct:free',
+          model: 'baidu/cobuddy:free',
           messages: [
             {
               role: 'system',
@@ -25,12 +25,13 @@ export class LLMService {
               role: 'user',
               content: prompt
             }
-          ]
+          ],
+          reasoning: { enabled: true }
         },
         {
           headers: {
             Authorization: `Bearer ${config.openRouterApiKey}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           }
         }
       );
@@ -39,8 +40,9 @@ export class LLMService {
       logger.info('Generated LLM response successfully');
       
       return generatedText;
-    } catch (error) {
-      logger.error('Failed to generate LLM response', error);
+    } catch (error: any) {
+      const details = error.response?.data || error.message;
+      logger.error('Failed to generate LLM response', error, { details });
       return 'We are experiencing high traffic right now. Please try again later.';
     }
   }
