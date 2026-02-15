@@ -3,272 +3,244 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LeadSync - Webhook Tester</title>
+  <title>LeadSync | Systems Console</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #000000;
+      --bg-panel: #0a0a0a;
+      --bg-hover: #111111;
+      --border: #333333;
+      --text-main: #ededed;
+      --text-muted: #a1a1aa;
+      --accent: #ffffff;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f5a623;
+      --font-sans: 'Geist', -apple-system, sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #0d1117;
-      color: #c9d1d9;
       margin: 0;
       padding: 0;
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Header */
     header {
-      background: #010409;
-      padding: 16px 24px;
-      border-bottom: 1px solid #30363d;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: var(--bg);
     }
     header h1 {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       margin: 0;
-      color: #e6edf3;
+      letter-spacing: -0.02em;
     }
-    .badge {
-      background: rgba(46, 160, 67, 0.15);
-      color: #3fb950;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid rgba(46, 160, 67, 0.4);
-    }
-    .main-content {
+
+    /* Layout */
+    .layout {
       display: flex;
       flex: 1;
-      padding: 24px;
-      gap: 24px;
       overflow: hidden;
+      padding: 32px;
+      gap: 32px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
     }
+
     .panel {
-      border: 1px solid #30363d;
+      border: 1px solid var(--border);
       border-radius: 8px;
+      background: var(--bg-panel);
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
-    
-    /* WhatsApp Simulator Panel */
+
+    /* Left: WhatsApp Simulator */
     .chat-panel {
       flex: 1;
-      max-width: 450px;
-      background: #efeae2; /* WhatsApp Web chat background */
-      display: flex;
-      flex-direction: column;
-      position: relative;
+      max-width: 400px;
     }
     
-    /* WhatsApp Header */
     .chat-header {
-      background: #f0f2f5;
-      padding: 10px 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 15px;
-      border-bottom: 1px solid #d1d7db;
-      z-index: 2;
+      gap: 12px;
     }
     .chat-header .avatar {
-      width: 40px;
-      height: 40px;
-      background: #dfe5e7;
+      width: 32px;
+      height: 32px;
+      background: var(--border);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
     }
-    .chat-header .avatar svg {
-      width: 20px;
-      height: 20px;
-      fill: #ffffff;
-    }
-    .chat-header .info {
-      display: flex;
-      flex-direction: column;
-    }
-    .chat-header .info .name {
-      color: #111b21;
-      font-weight: 500;
-      font-size: 16px;
-    }
-    .chat-header .info .status {
-      color: #667781;
-      font-size: 13px;
-    }
+    .chat-header .info { display: flex; flex-direction: column; }
+    .chat-header .info .name { font-size: 13px; font-weight: 500; }
+    .chat-header .info .status { font-size: 11px; color: var(--success); }
 
-    /* WhatsApp Chat Body */
     .chat-body {
       flex: 1;
       padding: 20px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      /* Subtle WhatsApp doodle background approximation */
-      background-image: radial-gradient(#d1d7db 1px, transparent 1px);
-      background-size: 20px 20px;
+      gap: 12px;
     }
     .message {
-      max-width: 75%;
-      padding: 6px 7px 8px 9px;
-      border-radius: 7.5px;
-      font-size: 14.2px;
-      line-height: 19px;
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
       position: relative;
-      color: #111b21;
-      box-shadow: 0 1px 0.5px rgba(11,20,26,.13);
     }
     .msg-user {
-      background: #d9fdd3;
+      background: var(--text-main);
+      color: var(--bg);
       align-self: flex-end;
-      border-top-right-radius: 0;
-    }
-    .msg-user::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: -8px;
-      width: 8px;
-      height: 13px;
-      background: linear-gradient(135deg, #d9fdd3 0%, #d9fdd3 50%, transparent 50%, transparent);
+      border-bottom-right-radius: 2px;
     }
     .msg-bot {
-      background: #ffffff;
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      color: var(--text-main);
       align-self: flex-start;
-      border-top-left-radius: 0;
-    }
-    .msg-bot::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -8px;
-      width: 8px;
-      height: 13px;
-      background: linear-gradient(-135deg, #ffffff 0%, #ffffff 50%, transparent 50%, transparent);
+      border-bottom-left-radius: 2px;
     }
     .msg-time {
-      font-size: 11px;
-      color: #667781;
-      float: right;
-      margin: 10px 0 -5px 10px;
+      font-size: 10px;
+      opacity: 0.7;
+      display: block;
+      margin-top: 4px;
+      text-align: right;
     }
 
-    /* WhatsApp Input Area */
-    .chat-input-container {
-      background: #f0f2f5;
-      padding: 10px 16px;
+    .chat-input {
+      padding: 16px;
+      border-top: 1px solid var(--border);
       display: flex;
-      gap: 10px;
-      align-items: center;
+      gap: 12px;
     }
     input[type="text"] {
       flex: 1;
-      padding: 9px 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      background: #ffffff;
-      color: #111b21;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13px;
       outline: none;
     }
-    input[type="text"]::placeholder {
-      color: #8696a0;
-    }
+    input[type="text"]:focus { border-color: #555; }
     .send-btn {
-      background: transparent;
+      background: var(--text-main);
+      color: var(--bg);
       border: none;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
-      color: #54656f;
     }
-    .send-btn:hover {
-      color: #00a884;
-    }
+    .send-btn:hover { background: #d4d4d8; }
 
-    /* Developer Logs Panel (Dark Mode) */
+    /* Right: Server Logs */
     .logs-panel {
       flex: 1.5;
-      background: #010409;
     }
-    .panel-header-dark {
-      padding: 14px 16px;
-      border-bottom: 1px solid #30363d;
-      font-weight: 600;
-      font-size: 14px;
-      color: #8b949e;
-      background: #0d1117;
+    .term-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
     }
-    .logs-body {
+    .term-body {
       flex: 1;
       padding: 16px;
       overflow-y: auto;
-      color: #8b949e;
-      font-family: Consolas, Monaco, "Courier New", monospace;
-      font-size: 13px;
-      line-height: 1.6;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.7;
     }
-    .log-line { margin-bottom: 6px; }
-    .log-time-dev { color: #6e7681; margin-right: 10px; }
-    .level-info { color: #58a6ff; font-weight: 600; }
-    .level-warn { color: #d29922; font-weight: 600; }
-    .level-error { color: #f85149; font-weight: 600; }
-    .log-msg { color: #e6edf3; margin-left: 5px; }
-    .log-meta { color: #8b949e; display: block; margin-left: 115px; margin-top: 2px;}
+    .log-line { display: flex; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
+    .t-time { color: #52525b; white-space: nowrap; }
+    .l-info { color: #60a5fa; }
+    .l-warn { color: var(--warning); }
+    .l-error { color: var(--danger); }
+    .t-msg { color: #d4d4d8; }
+    .t-meta { color: #71717a; font-size: 11px; width: 100%; padding-left: 115px; }
+
   </style>
 </head>
 <body>
   <header>
-    <h1>LeadSync System Console</h1>
-    <span class="badge">Webhook Listener Active</span>
+    <h1>LeadSync / Webhook Console</h1>
+    <div style="font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+      <span style="display:inline-block; width:8px; height:8px; background:var(--success); border-radius:50%; box-shadow: 0 0 10px var(--success);"></span>
+      Listener Active
+    </div>
   </header>
   
-  <div class="main-content">
-    <!-- WhatsApp Simulator -->
+  <div class="layout">
     <div class="panel chat-panel">
       <div class="chat-header">
         <div class="avatar">
-          <!-- Default person SVG -->
-          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </div>
         <div class="info">
-          <span class="name">LeadSync Support</span>
-          <span class="status">online</span>
+          <span class="name">LLM Support Agent</span>
+          <span class="status">● active</span>
         </div>
       </div>
       
       <div class="chat-body" id="chatContainer">
         <div class="message msg-bot">
-          Hi there! I am the LeadSync Assistant. Send a test message to trigger the webhook.
+          System initialized. Send a payload to trigger the inbound webhook.
           <span class="msg-time">10:00 AM</span>
         </div>
       </div>
       
-      <div class="chat-input-container">
-        <input type="text" id="messageInput" placeholder="Type a message">
-        <button class="send-btn" id="sendBtn">
-          <!-- Send Icon SVG -->
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-        </button>
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Enter message payload...">
+        <button class="send-btn" id="sendBtn">POST</button>
       </div>
     </div>
 
-    <!-- Server Logs -->
     <div class="panel logs-panel">
-      <div class="panel-header-dark">Live Server Logs</div>
-      <div class="logs-body" id="logsContainer">
+      <div class="term-head">
+        <span>stdout</span>
+      </div>
+      <div class="term-body" id="logsContainer">
         <div class="log-line">
-          <span class="log-time-dev">[System]</span>
-          <span class="level-info">INFO</span> 
-          <span class="log-msg">Waiting for incoming POST /api/webhook requests...</span>
+          <span class="t-time">[System]</span>
+          <span class="l-info">INFO</span> 
+          <span class="t-msg">Waiting for incoming POST /api/webhook requests...</span>
         </div>
       </div>
     </div>
@@ -285,37 +257,33 @@
       return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Subscribe to SSE Logs
     const eventSource = new EventSource('/api/logs');
     eventSource.onmessage = (event) => {
       const log = JSON.parse(event.data);
       appendLog(log);
       
-      // If the log is the simulated WhatsApp dispatch, show it in the chat
       if (log.message === 'WhatsApp message sent successfully' || log.message === 'WhatsApp access token is missing. Simulating message send.') {
          appendChat(log.text || 'Simulated API reply via LLM', 'bot');
       }
     };
 
     function appendLog(log) {
-      const div = document.createElement('div');
-      div.className = 'log-line';
       const time = new Date(log.timestamp).toLocaleTimeString();
-      
       let metaStr = '';
       const { level, message, timestamp, ...meta } = log;
       if (Object.keys(meta).length > 0) {
-        metaStr = `<span class="log-meta">${JSON.stringify(meta)}</span>`;
+        metaStr = `<div class="t-meta">${JSON.stringify(meta)}</div>`;
       }
 
-      div.innerHTML = `
-        <span class="log-time-dev">[${time}]</span>
-        <span class="level-${level}">${level.toUpperCase()}</span> 
-        <span class="log-msg">${message}</span>
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `
+        <span class="t-time">[${time}]</span>
+        <span class="l-${level}">${level.toUpperCase()}</span> 
+        <span class="t-msg">${message}</span>
         ${metaStr}
       `;
-      
-      logsContainer.appendChild(div);
+      logsContainer.appendChild(line);
       logsContainer.scrollTop = logsContainer.scrollHeight;
     }
 
@@ -334,7 +302,6 @@
       
       appendChat(text, 'user');
       
-      // Send mock webhook payload
       const payload = {
         object: 'whatsapp_business_account',
         entry: [{
